@@ -1,0 +1,39 @@
+@page "/Todo"
+<h3>Look Ma, no JS!</h3>
+<input
+    type="text"
+    placeholder="What needs to be done?"
+    @bind="CurrentTodo"
+    @bind:event="oninput"
+    @onkeydown="HandleEnterKeyPress"
+/>
+
+<hr />
+@if (Todos.Count > 0)
+{
+    <h4>Todo</h4>
+    <ul>
+        @foreach (var todo in Todos)
+        {
+            <li><input type="checkbox" checked=@todo.IsDone /> (@todo.Id) @todo.Title</li>
+        }
+    </ul>
+}
+else
+{
+    <p>No todos yet!</p>
+}
+
+@code {
+    private List<TodoItem> Todos { get; } = new();
+    private string CurrentTodo { get; set; } = string.Empty;
+    
+    public record TodoItem(int Id, string Title, bool IsDone);
+    
+    private void HandleEnterKeyPress(KeyboardEventArgs e)
+    {
+        if (e.Key != "Enter") return;
+        Todos.Add(new TodoItem(Todos.Count + 1, CurrentTodo, true));
+        CurrentTodo = string.Empty;
+    }
+}
